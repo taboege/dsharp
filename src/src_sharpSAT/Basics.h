@@ -7,9 +7,6 @@
 
 using namespace std;
 
-
-#define FULL_DDNNF
-
 enum Quiet {
     LOUD = 0,
     QUIET_NORMAL = 1,

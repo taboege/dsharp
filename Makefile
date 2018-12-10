@@ -31,6 +31,15 @@ ifneq ($(GMP),)
 	LIBS += -lgmpxx -lgmp
 endif
 
+BUILD_MODE=ddnnf
+ifeq ($(BUILD_MODE),ddnnf)
+	CXXFLAGS += -DFULL_DDNNF
+else
+ifneq ($(BUILD_MODE),bdg)
+$(error Unknown build mode $(BUILD_MODE))
+endif
+endif
+
 ####### Output directory
 
 OBJECTS_DIR = ./
@@ -116,19 +125,6 @@ clean:
 
 .c.o:
 	$(CC) -c $(CFLAGS) $(INCPATH) -o $@ $<
-
-####### Build modes
-
-.PHONY: ddnnf
-ddnnf:
-	$(COPY) $(DDNNF) $(BASIC)
-	make all
-
-.PHONY: bdg
-bdg:
-	$(COPY) $(BDG) $(BASIC)
-	make all
-	$(MOVE) $(TARGET) $(BDG_TARGET)
 
 ####### Sub-libraries
 
