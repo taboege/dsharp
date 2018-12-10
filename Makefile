@@ -18,12 +18,14 @@ MOVE     = mv -f
 CHK_DIR_EXISTS= test -d
 MKDIR    = mkdir -p
 
+DEBUG=
 ifeq ($(DEBUG),)
 	CXXFLAGS += -O3
 else
 	CXXFLAGS += -g -O0
 endif
 
+GMP=1
 ifneq ($(GMP),)
 	CXXFLAGS += -DGMP_BIGNUM
 	LIBS += -lgmpxx -lgmp
@@ -89,7 +91,7 @@ $(TARGET):  $(OBJECTS)
 help:
 	@echo "Builds 'dsharp' by default."
 	@echo "You can set DEBUG=1 to make a debuggable build and"
-	@echo "GMP=1 to enable big number support."
+	@echo "GMP= to disable big number support."
 
 .PHONY: clean
 clean:
