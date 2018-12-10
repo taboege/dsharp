@@ -2,6 +2,8 @@
 #include <math.h>
 #include<fstream>
 #include<stdio.h>
+#include<error.h>
+#include<errno.h>
 
 CRunAnalyzer theRunAn;
 
@@ -641,6 +643,11 @@ bool CInstanceGraph::createfromFile(const char* lpstrFileName)
 		fopen(lpstrFileName, "r")
 	;
 
+	if (!fp)
+	{
+		error(3, errno, "CNF input: failed to open file");
+	}
+
 	// read the preamble of the cnf file
 	while (fgets(buf, BUF_SZ, fp))
 	{
@@ -651,14 +658,13 @@ bool CInstanceGraph::createfromFile(const char* lpstrFileName)
 		{
 			if (sscanf(buf, "p cnf %d %d", &nVars, &nCls) < 2)
 			{
-				toERROUT("line "<<line<<": failed reading problem line \n");
-				exit(3);
+				error(3, errno, "failed reading problem at line %d", line);
 			}
 			break;
 		}
 		else
 		{
-			toERROUT("line"<<line<<": problem line expected "<<endl);
+			error(3, errno, "failed reading problem at line %d", line);
 		}
 	}
 	originalVarCount = nVars;
@@ -703,7 +709,7 @@ bool CInstanceGraph::createfromFile(const char* lpstrFileName)
 
 	if (!feof(fp))
 	{
-		toERROUT(" CNF input: read error or line too long");
+		error(3, errno, "CNF input: read error or line too long");
 	}
 	fclose(fp);
 	/// END FILE input
@@ -781,7 +787,7 @@ bool CInstanceGraph::createfromFile(const char* lpstrFileName)
 #ifdef DEBUG
 			if (ilitA == 0)
 			{
-				toERROUT("ERR");
+				error(4, 0, "ERR");
 				exit(3);
 			}
 #endif
@@ -810,7 +816,7 @@ bool CInstanceGraph::createfromFile(const char* lpstrFileName)
 #ifdef DEBUG
 				if (ilitB == 0)
 				{
-					toERROUT("ERR BIN CL");
+					error(4, 0, "ERR BIN CL");
 					exit(3);
 				}
 #endif
@@ -827,7 +833,7 @@ bool CInstanceGraph::createfromFile(const char* lpstrFileName)
 #ifdef DEBUG
 				if (ilitB == 0)
 				{
-					toERROUT("ERR CL");
+					error(4, 0, "ERR CL");
 					exit(3);
 				}
 #endif

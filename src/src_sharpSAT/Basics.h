@@ -51,13 +51,6 @@ public:
 #define verySTDOUT(X)	if(CSolverConf::quietMode < QUIET_VERY)   cout << X;
 #endif
 
-
-#ifdef COMPILE_FOR_GUI
-#define toERROUT(X)
-#else
-#define toERROUT(X)	if(!CSolverConf::quietMode) cout << X;
-#endif
-
 #ifdef DEBUG
 #define toDEBUGOUT(X) if(!CSolverConf::quietMode) cout << X;
 #else
