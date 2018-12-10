@@ -156,6 +156,21 @@ public:
         return rnProbOfSat * getAllAssignments();
     }
 
+#ifdef GMP_BIGNUM
+    mpz_class getIntSatAssignments() const
+    {
+	mpz_t num; mpz_init(num);
+	mpz_set_f(num, getNumSatAssignments().get_mpf_t());
+	return mpz_class(num);
+    }
+#else /* no GMP_BIGNUM */
+    /* No-op tp avoid truncation */
+    CRealNum getIntSatAssignments() const
+    {
+        return getNumSatAssignments();
+    }
+#endif
+
     void printNumSatAss_whole() const
     {
 #ifdef GMP_BIGNUM
@@ -171,7 +186,7 @@ public:
         //cout <<"e"<<(exp>0?"+":"-")<<exp;
         for (int i=exp-1; i>=0;i--) if (buf[i] == 0) buf[i] = '0';
         //gmp_printf("%F",res.get_mpf_t());
-        printf(buf);
+        toSTDOUT(buf);
 #endif
     }
 

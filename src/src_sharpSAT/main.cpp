@@ -39,11 +39,10 @@ void finalcSATEvaluation()
 
 	toSTDOUT("Pr[satisfaction]:\t" << rAda.rnProbOfSat <<endl);
 
-	verySTDOUT("# of solutions:\t\t" << rAda.getNumSatAssignments() <<endl);
-	verySTDOUT("#SAT (full):   \t\t");
-	if (CSolverConf::quietMode == LOUD)
-		rAda.printNumSatAss_whole();
-	verySTDOUT(endl);
+	verySTDOUT("# of solutions:\t\t" << fixed << rAda.getIntSatAssignments() <<endl);
+	toSTDOUT("#SAT (full):   \t\t");
+	rAda.printNumSatAss_whole();
+	toSTDOUT(endl);
 
 	toDEBUGOUT(".. found in:\t\t" << rAda.nReceivedSatAssignments << " units"<<endl);
 
