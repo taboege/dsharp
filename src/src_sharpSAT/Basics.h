@@ -10,13 +10,19 @@ using namespace std;
 
 #define FULL_DDNNF
 
+enum Quiet {
+    LOUD = 0,
+    QUIET_NORMAL = 1,
+    QUIET_VERY = 2
+};
+
 class CSolverConf
 {
 public:
     static bool analyzeConflicts;
     static bool doNonChronBackTracking;
 
-    static bool quietMode;
+    static enum Quiet quietMode;
 
     static bool allowComponentCaching;
     static bool allowImplicitBCP;
@@ -42,8 +48,10 @@ public:
 
 #ifdef COMPILE_FOR_GUI
 #define toSTDOUT(X)
+#define verySTDOUT(X)
 #else
-#define toSTDOUT(X)	if(!CSolverConf::quietMode) cout << X;
+#define toSTDOUT(X)	if(CSolverConf::quietMode < QUIET_NORMAL) cout << X;
+#define verySTDOUT(X)	if(CSolverConf::quietMode < QUIET_VERY)   cout << X;
 #endif
 
 
@@ -58,7 +66,6 @@ public:
 #else
 #define toDEBUGOUT(X)
 #endif
-
 
 enum SOLVER_StateT
 {

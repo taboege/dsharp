@@ -9,7 +9,7 @@ bool CSolverConf::allowImplicitBCP = true;
 
 bool CSolverConf::allowPreProcessing = true;
 
-bool CSolverConf::quietMode = false;
+enum Quiet CSolverConf::quietMode = LOUD;
 
 bool CSolverConf::smoothNNF = false;
 

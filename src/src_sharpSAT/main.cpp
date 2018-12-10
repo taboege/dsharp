@@ -21,7 +21,7 @@ void finalcSATEvaluation()
 
 	if (rAda.theExitState == TIMEOUT)
 	{
-		toSTDOUT(endl << " TIMEOUT !"<<endl);
+		verySTDOUT(endl << " TIMEOUT !"<<endl);
 		return;
 	}
 
@@ -39,11 +39,11 @@ void finalcSATEvaluation()
 
 	toSTDOUT("Pr[satisfaction]:\t" << rAda.rnProbOfSat <<endl);
 
-	toSTDOUT("# of solutions:\t\t" << rAda.getNumSatAssignments() <<endl);
-	toSTDOUT("#SAT (full):   \t\t");
-	if (!CSolverConf::quietMode)
+	verySTDOUT("# of solutions:\t\t" << rAda.getNumSatAssignments() <<endl);
+	verySTDOUT("#SAT (full):   \t\t");
+	if (CSolverConf::quietMode == LOUD)
 		rAda.printNumSatAss_whole();
-	toSTDOUT(endl);
+	verySTDOUT(endl);
 
 	toDEBUGOUT(".. found in:\t\t" << rAda.nReceivedSatAssignments << " units"<<endl);
 
@@ -72,7 +72,7 @@ void finalcSATEvaluation()
 
 	toSTDOUT("\n\nTime: "<<rAda.elapsedTime<<"s\n\n");
 
-	cout << "Runtime:" << rAda.elapsedTime << endl;
+	toSTDOUT("Runtime:" << rAda.elapsedTime << endl);
 
 }
 
@@ -113,7 +113,8 @@ int main(int argc, char *argv[])
 		cout << "\t -noNCB \t\t turn off nonchronological backtracking" << endl;
 		cout << "\t -noIBCP\t\t turn off implicit BCP" << endl;
 		cout << "\t -noDynDecomp\t\t turn off dynamic decomposition" << endl;
-		cout << "\t -q     \t\t quiet mode" << endl;
+		cout << "\t -q     \t\t suppress all statistics but print #SAT solution" << endl;
+		cout << "\t -qq    \t\t suppress all output" << endl;
 		cout << "\t -t [s] \t\t set time bound to s seconds" << endl;
 		cout << "\t -cs [n]\t\t set max cache size to n MB" << endl;
 		cout << "\t -FrA [file] \t\t file to output the run statistics" << endl;
@@ -154,7 +155,9 @@ int main(int argc, char *argv[])
 			CSolverConf::analyzeConflicts = false;
 		}
 		else if (strcmp(argv[i], "-q") == 0)
-			CSolverConf::quietMode = true;
+			CSolverConf::quietMode = QUIET_NORMAL;
+		else if (strcmp(argv[i], "-qq") == 0)
+			CSolverConf::quietMode = QUIET_VERY;
 		else if (strcmp(argv[i], "-FrA") == 0)
 		{
 			memset(dataFile, 0, 1024);
@@ -248,7 +251,7 @@ int main(int argc, char *argv[])
 		theRunAn.getData().writeToFile(dataFile);
 
         if (0 == theRunAn.getData().getNumSatAssignments()) {
-            cout << "\nTheory is unsat. Skipping file output.\n" << endl;
+            toSTDOUT("Theory is unsat. Skipping file output.\n" << endl);
             return 0;
         }
 
