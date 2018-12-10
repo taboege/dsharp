@@ -10,21 +10,14 @@ The history of the mercurial repository has been pulled in using [fast-export](h
 but author information is incomplete, e.g. "haz" missing an email in the
 mercurial repository, which is a mandatory field in git commits.
 
-Below is the README of the upstream repository.
-
--------
-
 # DSHARP version 1.0
 
 If you would like the solver to use infinite precision numbers for the counting,
 you must have the GMP library (libgmp-dev) installed. To use the version with GMP,
-copy the Makefile_gmp to Makefile. Otherwise, copy Makefile_nogmp to Makefile and
-proceed normally.
-
-To compile this version of DSHARP simply run
+set the `GMP` variable while executing the Makefile:
 
 ```
-make
+make GMP=1
 ```
 
 Please cite using the following:

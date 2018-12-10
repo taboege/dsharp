@@ -1,14 +1,8 @@
-
 CXX      = g++
-
-####### Change when done debugging.
-CXXFLAGS = -pipe -O3 -w
-#CXXFLAGS = -pipe -g -O0 -w
-
-
-INCPATH  =  -I. -Isrc/shared -I/usr/include 
+CXXFLAGS = -pipe -w
+INCPATH  = -I. -Isrc/shared -I/usr/include
 LINK     = g++
-LFLAGS   = 
+LFLAGS   =
 LIBS     = $(SUBLIBS) -L/usr/lib/
 TAR      = tar -cf
 GZIP     = gzip -9f
@@ -23,6 +17,17 @@ DEL_DIR  = rmdir
 MOVE     = mv -f
 CHK_DIR_EXISTS= test -d
 MKDIR    = mkdir -p
+
+ifeq ($(DEBUG),)
+	CXXFLAGS += -O3
+else
+	CXXFLAGS += -g -O0
+endif
+
+ifneq ($(GMP),)
+	CXXFLAGS += -DGMP_BIGNUM
+	LIBS += -lgmpxx -lgmp
+endif
 
 ####### Output directory
 
@@ -63,7 +68,7 @@ OBJECTS = Basics.o \
 		AtomsAndNodes.o \
 		main.o \
 		FormulaCache.o
-TARGET   = dsharp 
+TARGET   = dsharp
 
 DDNNF_TARGET = dsharp
 BDG_TARGET = dsharp-bdg
@@ -72,7 +77,25 @@ DDNNF = src/src_sharpSAT/Basics.h.ddnnf
 BDG = src/src_sharpSAT/Basics.h.bdg
 BASIC = src/src_sharpSAT/Basics.h
 
-first: all
+####### Build rules
+
+.PHONY: all
+all: Makefile $(TARGET)
+
+$(TARGET):  $(OBJECTS)
+	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(LIBS)
+
+.PHONY: help
+help:
+	@echo "Builds 'dsharp' by default."
+	@echo "You can set DEBUG=1 to make a debuggable build and"
+	@echo "GMP=1 to enable big number support."
+
+.PHONY: clean
+clean:
+	-$(DEL_FILE) $(OBJECTS)
+	-$(DEL_FILE) *~ core *.core
+
 ####### Implicit rules
 
 .SUFFIXES: .c .o .cpp .cc .cxx .C
@@ -92,23 +115,14 @@ first: all
 .c.o:
 	$(CC) -c $(CFLAGS) $(INCPATH) -o $@ $<
 
-####### Build rules
-
-all: Makefile $(TARGET)
-
-$(TARGET):  $(OBJECTS) 
-	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(LIBS)
-
-clean:
-	-$(DEL_FILE) $(OBJECTS)
-	-$(DEL_FILE) *~ core *.core
-
 ####### Build modes
 
+.PHONY: ddnnf
 ddnnf:
 	$(COPY) $(DDNNF) $(BASIC)
 	make all
 
+.PHONY: bdg
 bdg:
 	$(COPY) $(BDG) $(BASIC)
 	make all
@@ -116,6 +130,7 @@ bdg:
 
 ####### Sub-libraries
 
+.PHONY: distclean
 distclean: clean
 	-$(DEL_FILE) $(TARGET) $(TARGET)
 
