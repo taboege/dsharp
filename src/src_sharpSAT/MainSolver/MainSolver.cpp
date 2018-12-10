@@ -50,7 +50,7 @@ void CMainSolver::solve(const char *lpstrFileName)
 	stopWatch.markStartTime();
 
 	num_Nodes = 3;
-	
+
 	enable_DT_recording = true;
 
 	createfromFile(lpstrFileName);

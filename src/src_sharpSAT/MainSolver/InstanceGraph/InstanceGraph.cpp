@@ -636,19 +636,13 @@ bool CInstanceGraph::createfromFile(const char* lpstrFileName)
 	// END INIT
 
 	///BEGIN File input
-	FILE *filedesc;
-	filedesc = fopen(lpstrFileName, "r");
-	if (filedesc == NULL)
-	{
-		toERROUT(" Error opening file "<< lpstrFileName<<endl);
-		exit(3);
-	}
-	fclose(filedesc);
-
-	ifstream inFile(lpstrFileName, ios::in);
+	FILE *fp = strcmp(lpstrFileName, "-") == 0 ?
+		stdin :
+		fopen(lpstrFileName, "r")
+	;
 
 	// read the preamble of the cnf file
-	while (inFile.getline(buf, BUF_SZ))
+	while (fgets(buf, BUF_SZ, fp))
 	{
 		line++;
 		if (buf[0] == 'c')
@@ -670,7 +664,7 @@ bool CInstanceGraph::createfromFile(const char* lpstrFileName)
 	originalVarCount = nVars;
 	int i, j;
 	// now read the data
-	while (inFile.getline(buf, BUF_SZ))
+	while (fgets(buf, BUF_SZ, fp))
 	{
 		line++;
 		i = 0;
@@ -707,11 +701,11 @@ bool CInstanceGraph::createfromFile(const char* lpstrFileName)
 		}
 	}
 
-	if (!inFile.eof())
+	if (!feof(fp))
 	{
-		toERROUT(" CNF input: line too long");
+		toERROUT(" CNF input: read error or line too long");
 	}
-	inFile.close();
+	fclose(fp);
 	/// END FILE input
 
 
