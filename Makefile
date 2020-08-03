@@ -96,6 +96,9 @@ all: Makefile $(TARGET)
 $(TARGET):  $(OBJECTS)
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(LIBS)
 
+libdsharp.a: $(OBJECTS)
+	ar rc $@ $(OBJECTS)
+
 .PHONY: help
 help:
 	@echo "Builds 'dsharp' by default."
@@ -104,7 +107,7 @@ help:
 
 .PHONY: clean
 clean:
-	-$(DEL_FILE) $(OBJECTS)
+	-$(DEL_FILE) $(OBJECTS) dsharp libdsharp.a
 	-$(DEL_FILE) *~ core *.core
 
 ####### Implicit rules
