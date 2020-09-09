@@ -1,6 +1,6 @@
 CXX      = g++
 CXXFLAGS = -pipe -w
-INCPATH  = -I. -Isrc/shared -I/usr/include
+INCPATH  = -I. -Iinclude -Isrc/shared -I/usr/include
 LINK     = g++
 LFLAGS   =
 LIBS     = $(SUBLIBS) -L/usr/lib/
@@ -25,12 +25,6 @@ else
 	CXXFLAGS += -g -O0
 endif
 
-GMP=1
-ifneq ($(GMP),)
-	CXXFLAGS += -DGMP_BIGNUM
-	LIBS += -lgmpxx -lgmp
-endif
-
 BUILD_MODE=ddnnf
 ifeq ($(BUILD_MODE),ddnnf)
 	CXXFLAGS += -DFULL_DDNNF
@@ -48,7 +42,6 @@ OBJECTS_DIR = ./
 
 HEADERS = src/src_sharpSAT/Basics.h \
 		src/shared/SomeTime.h \
-		src/shared/RealNumberTypes.h \
 		src/shared/Interface/AnalyzerData.h \
 		src/src_sharpSAT/MainSolver/DecisionStack.h \
 		src/src_sharpSAT/MainSolver/DecisionTree.h \
@@ -59,7 +52,6 @@ HEADERS = src/src_sharpSAT/Basics.h \
 		src/src_sharpSAT/MainSolver/FormulaCache.h
 SOURCES = src/src_sharpSAT/Basics.cpp \
 		src/shared/SomeTime.cpp \
-		src/shared/RealNumberTypes.cpp \
 		src/shared/Interface/AnalyzerData.cpp \
 		src/src_sharpSAT/MainSolver/DecisionStack.cpp \
 		src/src_sharpSAT/MainSolver/DecisionTree.cpp \
@@ -70,7 +62,6 @@ SOURCES = src/src_sharpSAT/Basics.cpp \
 		src/src_sharpSAT/MainSolver/FormulaCache.cpp
 OBJECTS = Basics.o \
 		SomeTime.o \
-		RealNumberTypes.o \
 		AnalyzerData.o \
 		DecisionStack.o \
 		DecisionTree.o \
@@ -98,7 +89,7 @@ $(TARGET): include/BigInt.hpp $(OBJECTS)
 
 include/BigInt.hpp:
 	mkdir -p include
-	(pushd BigInt >&-; sh scripts/release.sh; popd >&-) >include/BigInt.hpp
+	(cd BigInt && sh scripts/release.sh) >include/BigInt.hpp
 
 libdsharp.a: $(OBJECTS)
 	ar rc $@ $(OBJECTS)
@@ -107,10 +98,10 @@ libdsharp.a: $(OBJECTS)
 help:
 	@echo "Builds 'dsharp' by default."
 	@echo "You can set DEBUG=1 to make a debuggable build and"
-	@echo "GMP= to disable big number support."
 
 .PHONY: clean
 clean:
+	-$(DEL_FILE) include/BigInt.hpp
 	-$(DEL_FILE) $(OBJECTS) dsharp libdsharp.a
 	-$(DEL_FILE) *~ core *.core
 

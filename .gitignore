@@ -1,3 +1,4 @@
 dsharp
 *.o
 tags
+include

@@ -334,12 +334,12 @@ bool CMainSolver::decide()
 	}
 
 	//checkCachedCompVal:
-	static CRealNum cacheVal;
+	static BigInt cacheVal;
 
 	//decStack.TOS_NextComp();
 
 	if (CSolverConf::allowComponentCaching && xFormulaCache.extract(
-			decStack.TOS_NextComp(), cacheVal,
+			decStack.TOS_NextComp(), (void*) &cacheVal,
 			decStack.top().getCurrentDTNode()))
 	{
 		decStack.top().includeSol(cacheVal);
@@ -461,9 +461,9 @@ retStateT CMainSolver::backTrack()
 		//include the component value of the current component into the Cache
 		if (CSolverConf::allowComponentCaching)
 		{
+			BigInt v = decStack.top().getOverallSols();
 			xFormulaCache.include(decStack.TOSRefComp(),
-					decStack.top().getOverallSols(),
-					decStack.top().getOrDTNode());
+					&v, decStack.top().getOrDTNode());
 		}
 
 	} while (decStack.pop());

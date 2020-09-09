@@ -9,7 +9,7 @@
 #include <vector>
 #include <math.h>
 
-#include <RealNumberTypes.h>
+#include <BigInt.hpp>
 
 #include "AtomsAndNodes.h"
 

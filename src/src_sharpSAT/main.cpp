@@ -37,9 +37,6 @@ void finalcSATEvaluation()
 	toSTDOUT("\n# of all assignments:\t" << rAda.getAllAssignments()
 			<< " = 2^(" << rAda.nVars<<")" <<endl);
 
-	toSTDOUT("Pr[satisfaction]:\t" << rAda.rnProbOfSat <<endl);
-
-	verySTDOUT("# of solutions:\t\t" << fixed << rAda.getIntSatAssignments() <<endl);
 	toSTDOUT("#SAT (full):   \t\t");
 	rAda.printNumSatAss_whole();
 	toSTDOUT(endl);

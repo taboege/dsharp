@@ -24,7 +24,7 @@ void AnalyzerData::init()
 
     nReceivedSatAssignments = 0;
 
-    rnProbOfSat = 0.0;
+    countSAT = 0;
 
     nConflicts = 0;
     nImplications = 0;
@@ -84,9 +84,9 @@ void AnalyzerData::loadFromFile(const char *lpcstrFileName)
                 in.getline(buf,sz);
                 theExitState = (SOLVER_StateT) atoi(buf);
             }
-            else if (!strcmp(desc,"rnProbOfSAT"))
+            else if (!strcmp(desc,"countSAT"))
             {
-                in >> rnProbOfSat;
+                in >> countSAT;
             }
         }
     }
@@ -115,18 +115,8 @@ void AnalyzerData::writeToFile(const char *lpcstrFileName) const
     out<<"SolverExitState"<<endl;
     out<<theExitState<<endl;
 
-#ifdef GMP_BIGNUM
-    char buf[nVars+2];
-    memset(buf,0,nVars+2);
-    mp_exp_t exp;
-    mpf_get_str(buf,&exp,10,nVars+2,rnProbOfSat.get_mpf_t());
-
-    out<<"rnProbOfSAT"<<endl;
-    out<<"0."<<buf<<"e"<<exp<<endl;
-#else
-    out<<"rnProbOfSAT"<<endl;
-    out<<rnProbOfSat<<endl;
-#endif
+    out<<"countSAT"<<endl;
+    out<<countSAT.to_string()<<endl;
 }
 
 
@@ -325,11 +315,6 @@ void CRunAnalyzer::addClause()
 void CRunAnalyzer::setUsedVars(unsigned int nUsedVars)
 {
     theData.nUsedVars = nUsedVars;
-}
-
-void CRunAnalyzer::setSatCount(const CRealNum &rnCodedSols)
-{
-    to_div_2exp(theData.rnProbOfSat,rnCodedSols,theData.nUsedVars);
 }
 
 /*

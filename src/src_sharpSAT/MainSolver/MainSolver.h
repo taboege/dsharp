@@ -79,13 +79,13 @@ class CMainSolver: public CInstanceGraph
 	void handleSolution()
 	{
 		int actCompVars = 0;
-		static CRealNum rnCodedSols;
+		static BigInt rnCodedSols;
 
 		// in fact the active component should only contain active vars
 		if (decStack.TOS_countRemComps() != 0)
 			actCompVars = decStack.TOS_NextComp().countVars();
 
-		pow2(rnCodedSols, actCompVars);
+		rnCodedSols = pow(BigInt(2), actCompVars);
 		decStack.top().includeSol(rnCodedSols);
 		theRunAn.addValue(SOLUTION, decStack.getDL());
 

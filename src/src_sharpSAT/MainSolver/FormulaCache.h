@@ -12,7 +12,7 @@
 
 
 #include <SomeTime.h>
-#include <RealNumberTypes.h>
+#include <BigInt.hpp>
 #include <Interface/AnalyzerData.h>
 
 
@@ -37,7 +37,7 @@ class CCacheEntry : public CPackedCompId<unsigned int>
 
 public:
 
-    CRealNum   theVal;
+    BigInt   theVal;
     
     DTNode  *  theDTNode;
 
@@ -345,9 +345,9 @@ public:
 
     long unsigned int computeHashVal(const CComponentId &rComp);
 
-    bool include(CComponentId &rComp, const CRealNum &val, DTNode * dtNode);
+    bool include(CComponentId &rComp, const void* valp, DTNode * dtNode);
 
-    bool extract(CComponentId &rComp, CRealNum &val, DTNode * dtNode);
+    bool extract(CComponentId &rComp, void* val, DTNode * dtNode);
 
     bool deleteEntries(CDecisionStack & rDecStack);
 

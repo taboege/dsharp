@@ -7,7 +7,7 @@
 #include <assert.h>
 #endif
 
-#include <RealNumberTypes.h>
+#include <BigInt.hpp>
 
 #include "../Basics.h"
 
@@ -37,7 +37,7 @@ class CDecision
     unsigned int iImpLitOfs;
 
     //  Solutioncount
-    CRealNum  rnNumSols[2];
+    BigInt  rnNumSols[2];
     
     ////////////////////
     /// decision tree node
@@ -106,19 +106,19 @@ public:
         return getBranchSols() !=0.0 && countCompsToProcess() > 0;
     }
 
-    void includeSol(const CRealNum &rnCodedSols)
+    void includeSol(const BigInt &rnCodedSols)
     {
         if (rnNumSols[flipped] == 0.0)   rnNumSols[flipped] = rnCodedSols;
         else
             rnNumSols[flipped] *= rnCodedSols;
     }
 
-    const CRealNum &getBranchSols() const
+    const BigInt &getBranchSols() const
     {
         return rnNumSols[flipped];
     }
 
-    const CRealNum getOverallSols() const
+    const BigInt getOverallSols() const
     {
         return rnNumSols[0] + rnNumSols[1];
     }

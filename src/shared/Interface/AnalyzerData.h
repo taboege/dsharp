@@ -3,7 +3,7 @@
 #ifndef ANALYZERDATA_H
 #define ANALYZERDATA_H
 
-#include <RealNumberTypes.h>
+#include <BigInt.hpp>
 
 //#include <Interface/Assignment.h>
 #include "../src_sharpSAT/Basics.h"
@@ -133,8 +133,7 @@ public:
     int maxSolutionLevel;
 
     vector<double> evalData;
-    /// Wahrscheinlichkeit der Erfuellbarkeit der Instanz
-    CRealNum rnProbOfSat;
+    BigInt countSAT;
 
     // class constructor
     AnalyzerData();
@@ -144,50 +143,19 @@ public:
     /// setzt alle Werte auf Null zurck (nur intern wichtig).
     void init();
 
-    CRealNum getAllAssignments() const
+    BigInt getAllAssignments() const
     {
-        CRealNum res;
-        pow2(res,nVars);
-        return res;
+        return pow(BigInt(2),nVars);
     }
 
-    CRealNum getNumSatAssignments() const
+    BigInt getNumSatAssignments() const
     {
-        return rnProbOfSat * getAllAssignments();
+        return countSAT;
     }
-
-#ifdef GMP_BIGNUM
-    mpz_class getIntSatAssignments() const
-    {
-	mpz_t num; mpz_init(num);
-	mpz_set_f(num, getNumSatAssignments().get_mpf_t());
-	return mpz_class(num);
-    }
-#else /* no GMP_BIGNUM */
-    /* No-op tp avoid truncation */
-    CRealNum getIntSatAssignments() const
-    {
-        return getNumSatAssignments();
-    }
-#endif
 
     void printNumSatAss_whole() const
     {
-#ifdef GMP_BIGNUM
-        CRealNum res;
-        res.set_prec(nVars);
-        pow2(res,nVars);
-        res *= rnProbOfSat;
-        char buf[nVars+2];
-        mp_exp_t exp;
-        memset(buf,0,nVars+2);
-        mpf_get_str(buf,&exp,10,nVars+2,res.get_mpf_t());
-
-        //cout <<"e"<<(exp>0?"+":"-")<<exp;
-        for (int i=exp-1; i>=0;i--) if (buf[i] == 0) buf[i] = '0';
-        //gmp_printf("%F",res.get_mpf_t());
-        toSTDOUT(buf);
-#endif
+        toSTDOUT(countSAT.to_string());
     }
 
 
@@ -259,11 +227,8 @@ public:
 
     void addClause();
 
-    void setSatCount(const CRealNum  &rnCodedSols);
-
-    void setSatProb(const CRealNum  &rnProb)
-    {
-        theData.rnProbOfSat = rnProb;
+    void setSatCount(const BigInt  &codedSols) {
+        theData.countSAT = codedSols;
     }
 
 

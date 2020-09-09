@@ -28,13 +28,14 @@ CFormulaCache::CFormulaCache()
 
 
 
-bool CFormulaCache::include(CComponentId &rComp, const CRealNum &val, DTNode * dtNode)
+bool CFormulaCache::include(CComponentId &rComp, const void* valp, DTNode * dtNode)
 {
 #ifdef DEBUG
     // if everything is correct, a new value to be cached
     // should not already be stored in the cache
     assert(rComp.cachedAs == NIL_ENTRY);
 #endif
+    const BigInt& val = *static_cast<const BigInt*>(valp);
 
     if (rComp.empty()) return false;
     iCacheTries++;
@@ -85,9 +86,10 @@ bool CFormulaCache::include(CComponentId &rComp, const CRealNum &val, DTNode * d
     return true;
 }
 
-bool CFormulaCache::extract(CComponentId &rComp, CRealNum &val, DTNode * dtNode)
+bool CFormulaCache::extract(CComponentId &rComp, void* valp, DTNode * dtNode)
 {
     long unsigned int hV = rComp.getHashKey();
+    BigInt& val = *static_cast<BigInt*>(valp);
 
     unsigned int v = clip(hV);
 
