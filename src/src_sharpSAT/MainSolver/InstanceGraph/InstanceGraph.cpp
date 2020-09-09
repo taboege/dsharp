@@ -624,7 +624,7 @@ bool CInstanceGraph::createfromFile(const char* lpstrFileName)
 	char buf[BUF_SZ];
 	char token[TOK_SZ];
 	unsigned int line = 0;
-	unsigned int nVars, nCls;
+	unsigned int nVars = 0, nCls = 0;
 	int lit;
 	vector<int> litVec;
 	vector<TriValue> seenV;
@@ -638,10 +638,7 @@ bool CInstanceGraph::createfromFile(const char* lpstrFileName)
 	// END INIT
 
 	///BEGIN File input
-	FILE *fp = strcmp(lpstrFileName, "-") == 0 ?
-		stdin :
-		fopen(lpstrFileName, "r")
-	;
+	FILE *fp = strcmp(lpstrFileName, "-") == 0 ? stdin : fopen(lpstrFileName, "r");
 
 	if (!fp)
 	{
@@ -656,7 +653,7 @@ bool CInstanceGraph::createfromFile(const char* lpstrFileName)
 			continue;
 		if (buf[0] == 'p')
 		{
-			if (sscanf(buf, "p cnf %d %d", &nVars, &nCls) < 2)
+			if (sscanf(buf, "p cnf %u %u", &nVars, &nCls) < 2)
 			{
 				error(3, errno, "failed reading problem at line %d", line);
 			}
@@ -667,7 +664,7 @@ bool CInstanceGraph::createfromFile(const char* lpstrFileName)
 			error(3, errno, "failed reading problem at line %d", line);
 		}
 	}
-	originalVarCount = nVars;
+	unsigned int maxvar = 0, clauses = 0;
 	int i, j;
 	// now read the data
 	while (fgets(buf, BUF_SZ, fp))
@@ -698,14 +695,22 @@ bool CInstanceGraph::createfromFile(const char* lpstrFileName)
 				if (clauseLen > 0)
 					litVec.push_back(0);
 				clauseLen = 0;
+				clauses++;
 			}
 			else
 			{
 				clauseLen++;
 				litVec.push_back(lit);
+				unsigned int v = lit < 0 ? -lit : lit;
+				maxvar = maxvar > v ? maxvar : v;
 			}
 		}
 	}
+	if (nVars == 0)
+		nVars = maxvar;
+	if (nCls == 0)
+		nCls = clauses;
+	originalVarCount = nVars;
 
 	if (!feof(fp))
 	{
