@@ -93,8 +93,12 @@ BASIC = src/src_sharpSAT/Basics.h
 .PHONY: all
 all: Makefile $(TARGET)
 
-$(TARGET):  $(OBJECTS)
+$(TARGET): include/BigInt.hpp $(OBJECTS)
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(LIBS)
+
+include/BigInt.hpp:
+	mkdir -p include
+	(pushd BigInt >&-; sh scripts/release.sh; popd >&-) >include/BigInt.hpp
 
 libdsharp.a: $(OBJECTS)
 	ar rc $@ $(OBJECTS)
