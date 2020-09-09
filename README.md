@@ -10,6 +10,10 @@ The history of the mercurial repository has been pulled in using [fast-export](h
 but author information is incomplete, e.g. "haz" missing an email in the
 mercurial repository, which is a mandatory field in git commits.
 
+The solver is now always built statically with multiprecision support.
+
+---
+
 # DSHARP version 1.0
 
 If you would like the solver to use infinite precision numbers for the counting,

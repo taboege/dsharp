@@ -1,7 +1,7 @@
-CXX      = g++
+CXX      = g++ -static
 CXXFLAGS = -pipe -w
 INCPATH  = -I. -Iinclude -Isrc/shared -I/usr/include
-LINK     = g++
+LINK     = g++ -static
 LFLAGS   =
 LIBS     = $(SUBLIBS) -L/usr/lib/
 TAR      = tar -cf
